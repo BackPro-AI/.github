@@ -93,5 +93,5 @@ body:
     attributes:
       label: Anything else
       description: Mockups, related issues, links, screenshots, contract clauses, etc.
-      validations:
-        required: false
+    validations:
+      required: false
