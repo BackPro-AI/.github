@@ -1,0 +1,88 @@
+name: 🐛 Bug report
+description: Something is broken — generic intake (no specific tenant context required).
+title: "[BUG] <short description>"
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For tenant-driven bugs (where a specific client is blocked), prefer
+        the **Tenant request** template instead — it captures the tenant
+        context for triage prioritization.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: |
+        Critical = data loss / security / production outage
+        High    = core feature broken, no workaround
+        Medium  = feature broken, workaround exists
+        Low     = cosmetic / minor inconvenience
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: Affected repo / component
+      description: Which repo (or which directory of backend-v2) is affected?
+      placeholder: "backend-v2 / core/agent/retry.py"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: One paragraph — what went wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened
+      description: What was the expected behaviour?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: |
+        Step-by-step. Include exact commands, payloads, or UI clicks.
+        If you have a curl command that triggers it, paste it.
+      placeholder: |
+        1. POST /agent with payload {"query": "..."}
+        2. Observe response includes empty gate_report
+        3. Expected: gate_report has at least 1 verdict
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Where did this happen? Local dev / staging / production?
+        Which tenant deployment if relevant?
+      placeholder: "Production, FW deployment, Australia East region"
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stack trace
+      description: Paste relevant log lines or stack traces. Sentry / Langfuse links welcome.
+      render: shell
+    validations:
+      required: false

@@ -1,0 +1,62 @@
+name: ✨ Feature request
+description: New capability — internal idea, not driven by a specific tenant ask.
+title: "[FEAT] <short summary>"
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For tenant-driven features (where a specific client wants this), use
+        the **Tenant request** template — captures the contract / regulatory
+        context that helps with prioritization.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem this solves
+      description: |
+        What's the underlying pain point? Who feels it and how often?
+        ("We want X" is not a problem statement — "X is hard because Y" is.)
+      placeholder: |
+        Engineers debugging gate verdicts have to grep through logs to figure
+        out which decomposed claim led to a refusal. There's no UI surfacing
+        the chain.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: |
+        Sketch the change. UI mockup, API shape, schema diff — whatever
+        helps the reader understand the shape of the work.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: |
+        What else did you think about? Why is the proposed solution better?
+        (One line each is fine. The point is to surface the tradeoff.)
+    validations:
+      required: false
+
+  - type: textarea
+    id: success
+    attributes:
+      label: Definition of done
+      description: How will we know we've delivered this? What changes about user behaviour?
+      placeholder: "Engineers can click a verdict in the gate UI and see the full claim → source citation chain."
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Mockups, related issues, prior art, etc.
+      validations:
+        required: false

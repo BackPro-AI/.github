@@ -1,0 +1,29 @@
+# BackPro-AI org-level issue template config.
+#
+# Lives in the special `.github` repository. GitHub treats anything under
+# .github/ISSUE_TEMPLATE/ here as the DEFAULT issue templates for every
+# repository in the BackPro-AI org that does not have its own
+# .github/ISSUE_TEMPLATE/ directory. That gives consistent intake across
+# backend-v2, FW_Frontend, m4l_website, SFML_Frontend, and future repos
+# without per-repo duplication.
+#
+# `blank_issues_enabled: false` forces contributors to choose one of the
+# templates below — preventing the "no context, no labels, no priority"
+# issue type that's hard to triage. If a genuinely freeform issue is
+# needed, the `Other / catch-all` link below points to a discussion.
+
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/BackPro-AI/backend-v2/security/advisories/new
+    about: |
+      Found a security issue? Please use GitHub's private security advisory
+      flow instead of a public issue. We'll triage privately and coordinate
+      disclosure.
+
+  - name: Internal Slack discussion
+    url: https://backpro.slack.com
+    about: |
+      Quick questions, design discussions, or anything that's not a tracked
+      work item — Slack is faster.
