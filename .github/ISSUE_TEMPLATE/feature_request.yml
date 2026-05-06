@@ -58,5 +58,5 @@ body:
     attributes:
       label: Anything else
       description: Mockups, related issues, prior art, etc.
-      validations:
-        required: false
+    validations:
+      required: false
