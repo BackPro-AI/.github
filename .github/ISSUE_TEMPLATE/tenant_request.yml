@@ -1,0 +1,97 @@
+name: Tenant request (FW / M4L / Selectors / Internal)
+description: Structured intake for client-tenant work — replaces ad-hoc Slack messages.
+title: "[<tenant>] <short summary>"
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for any work tied to a specific client tenant (Frazer Walker,
+        More4Life, Selectors) or for internal platform work that should be
+        tracked alongside tenant work in the same project board.
+
+        For pure bugs without a tenant context, use **🐛 Bug report** instead.
+        For new feature ideas without a client driver, use **✨ Feature request**.
+
+  - type: dropdown
+    id: tenant
+    attributes:
+      label: Tenant
+      description: Which client (or internal) does this request relate to?
+      options:
+        - Frazer Walker
+        - More4Life
+        - Selectors
+        - Internal (no specific tenant)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What kind of work is this?
+      options:
+        - Feature (new capability)
+        - Bug (something is broken)
+        - Documentation
+        - Operations / infrastructure
+        - Compliance / audit deliverable
+        - Question / clarification
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: |
+        Critical = production outage / customer blocked / security incident
+        High    = customer waiting, no workaround
+        Medium  = customer waiting, workaround exists
+        Low     = nice to have, no time pressure
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What's needed
+      description: One paragraph — what does the tenant want to happen?
+      placeholder: "FW wants to be able to upload a CSV of their existing policies and have BackPro auto-tag them with the relevant CPS-234 controls."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / why now
+      description: |
+        Who asked (which contact at the tenant, when, on which channel)?
+        Is there a deadline (regulatory, contract milestone, internal commitment)?
+        Any prior thread / Slack message link?
+      placeholder: "Asked by Sarah at FW on the 14 May call. CPS-234 audit is 30 May."
+    validations:
+      required: false
+
+  - type: textarea
+    id: success
+    attributes:
+      label: Definition of done
+      description: How will we know we've delivered this?
+      placeholder: "FW can upload a CSV and see suggested CPS-234 control mappings in the UI within 30 seconds."
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Mockups, related issues, links, screenshots, contract clauses, etc.
+      validations:
+        required: false

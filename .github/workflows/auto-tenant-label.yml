@@ -1,0 +1,106 @@
+# =============================================================================
+# auto-tenant-label.yml — apply tenant/category/urgency labels from issue forms
+# =============================================================================
+# Issue Forms in pure YAML cannot dynamically set labels based on a dropdown
+# selection — only fixed labels at template level. This workflow bridges
+# that gap: it parses the dropdown selections out of the rendered issue body
+# and applies the matching labels.
+#
+# Lives in BackPro-AI/.github (the org's special repo). Workflows here run
+# on issue events in any repo that doesn't have its own .github/workflows/
+# overriding them — but org-level workflows do NOT run on issues in
+# member repos automatically. So this workflow really lives here as the
+# canonical source; an identical short-form `workflow_call` reference can
+# be added per-repo if/when needed.
+#
+# For now this workflow is documented but inert (it only runs on issues
+# opened on the .github repo itself, which is essentially never). To
+# activate per-repo, add a thin caller workflow in that repo's
+# .github/workflows/ directory that uses `workflow_call`.
+# =============================================================================
+
+name: Auto-label tenant/category/urgency
+
+on:
+  issues:
+    types: [opened, edited]
+  workflow_call:
+    # Allows other repos to invoke this workflow via:
+    #   uses: BackPro-AI/.github/.github/workflows/auto-tenant-label.yml@main
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Apply labels from form selections
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const body = context.payload.issue.body || '';
+            const labels = [];
+
+            // Match dropdown sections rendered by GitHub Issue Forms.
+            // Format example:
+            //   ### Tenant
+            //
+            //   Frazer Walker
+            //
+            //   ### Category
+            //   ...
+            const extract = (heading) => {
+              const re = new RegExp(`### ${heading}\\s*\\n+([^\\n]+)`, 'i');
+              const m = body.match(re);
+              return m ? m[1].trim() : null;
+            };
+
+            // --- Tenant ---
+            const tenant = extract('Tenant');
+            const tenantMap = {
+              'Frazer Walker': 'tenant: frazer-walker',
+              'More4Life': 'tenant: more4life',
+              'Selectors': 'tenant: selectors',
+              'Internal (no specific tenant)': 'tenant: internal',
+            };
+            if (tenant && tenantMap[tenant]) labels.push(tenantMap[tenant]);
+
+            // --- Category ---
+            const category = extract('Category');
+            const categoryMap = {
+              'Feature (new capability)': 'category: feature',
+              'Bug (something is broken)': 'category: bug',
+              'Documentation': 'category: docs',
+              'Operations / infrastructure': 'category: ops',
+              'Compliance / audit deliverable': 'category: compliance',
+              'Question / clarification': 'category: question',
+            };
+            if (category && categoryMap[category]) labels.push(categoryMap[category]);
+
+            // --- Urgency ---
+            const urgency = extract('Urgency');
+            if (urgency && ['Critical', 'High', 'Medium', 'Low'].includes(urgency)) {
+              labels.push(`urgency: ${urgency.toLowerCase()}`);
+            }
+
+            // --- Severity (for bug_report.yml) ---
+            const severity = extract('Severity');
+            if (severity && ['Critical', 'High', 'Medium', 'Low'].includes(severity)) {
+              labels.push(`severity: ${severity.toLowerCase()}`);
+            }
+
+            if (labels.length === 0) {
+              core.info('No tenant/category/urgency/severity dropdowns matched — skipping.');
+              return;
+            }
+
+            core.info(`Applying labels: ${labels.join(', ')}`);
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              labels,
+            });
